@@ -1,0 +1,101 @@
+.container-content {
+    min-height: 500px;
+}
+.list-iconed .icon,
+.list-iconed .fa {
+    width: 20px;
+    text-align: center;
+    margin: 0 5px 0 0;
+}
+
+form .form-group label {
+    line-height: 34px;
+}
+.form-inline .form-group {
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+.fixed-sidebar .sidebar-wrapper {
+    min-height: inherit !important;
+}
+.form-inline .select-picker {
+    display: inline-block;
+    width: auto !important;
+}
+
+.dialog {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 1090;
+    background: rgba(0, 0, 0, .15);
+}
+.dialog .panel {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+}
+.dropzone .dz-preview .dz-error-message {
+    top: -40px;
+}
+.dropzone .dz-preview .dz-error-message:after {
+    top: auto;
+    bottom: -6px;
+    border-bottom: none;
+    border-top: 6px solid #be2626;
+}
+.form-horizontal .option-group .option.inline-block {
+    margin-right: 10px;
+}
+.form-horizontal .option-group .radio,
+.form-horizontal .option-group .checkbox {
+    min-height: inherit;
+    padding-top: 0;
+}
+.table {
+    table-layout: fixed;
+}
+.table th, .table td{
+    word-wrap: break-word;
+    word-break: break-all;
+}
+.table-detail>thead>tr>th {
+    overflow: hidden;
+    height: 0;
+    padding: 0;
+    line-height: 0;
+}
+.table-detail>tbody>tr>td, .table-detail>tbody>tr>th, .table-detail>tfoot>tr>td, .table-detail>tfoot>tr>th, .table-detail>thead>tr>td, .table-detail>thead>tr>th {
+    border-top-style: dotted;
+}
+.dialog .panel-body {
+    position: relative;
+}
+.dialog .iframe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+.error {
+    color: #a94442;
+}
+.option {
+    cursor: pointer;
+}
+.dropdown-menu {
+    top: 0;
+    left: auto;
+    right: 100%;
+}
+.nodata {
+    font: 16px/36px 'microsoft yahei';
+    text-align: center;
+    color: #999;
+    padding: 15px 0;
+}

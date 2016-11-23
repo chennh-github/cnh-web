@@ -1,0 +1,98 @@
+#{{#info}}{{title}}
+
+
+## {{join schemes " | "}}://{{host}}{{basePath}}
+{{description}}
+{{#contact}}
+[**Contact the developer**](mailto:{{email}})
+{{/contact}}
+**Version** {{version}}
+{{/info}}
+# Catalogs
+{{#each paths}}
+{{#this}}
+* <a href="#{{@key}}">**{{@key}}**</a><br/>
+{{#get}}<a href="#{{@key}}/@GET">GET {{summary}}</a><br/>{{/get}}{{#put}}<a href="#{{@key}}/@PUT">PUT {{summary}}</a><br/>{{/put}}{{#post}}<a href="#{{@key}}/@POST">POST {{summary}}</a><br/>{{/post}}{{#delete}}<a href="#{{@key}}/@DELETE">DELETE {{summary}}</a><br/>{{/delete}}{{#option}}<a href="#{{@key}}/@OPTION">OPTION {{summary}}</a><br/>{{/option}}{{#patch}}<a href="#{{@key}}/@PATCH">PATCH {{summary}}</a><br/>{{/patch}}{{#head}}<a href="#{{@key}}/@HEAD">HEAD {{summary}}</a><br/>{{/head}}
+{{/this}}
+{{/each}}
+{{#each definitions}}
+* <a href="#/definitions/{{key}}">{{@key}}</a>
+{{/each}}
+{{#if consumes}}**Consumes:** {{join consumes ", "}}{{/if}}
+{{#if produces}}**Produces:** {{join produces ", "}}{{/if}}
+{{#if securityDefinitions}}
+# Security Definitions
+{{/if}}
+{{> security}}
+# APIs
+{{#each paths}}
+{{#this}}
+{{#get}}
+## <a name="{{@key}}">{{@key}}</a>
+### <a name="{{@key}}/@GET">GET</a>
+{{> operation}}
+{{/get}}
+{{#put}}
+## <a name="{{@key}}">{{@key}}</a>
+### <a name="{{@key}}/@PUT">PUT</a>
+{{> operation}}
+{{/put}}
+{{#post}}
+## <a name="{{@key}}">{{@key}}</a>
+### <a name="{{@key}}/@POST">POST</a>
+{{> operation}}
+{{/post}}
+{{#delete}}
+## <a name="{{@key}}">{{@key}}</a>
+### <a name="{{@key}}/@DELETE">DELETE</a>
+{{> operation}}
+{{/delete}}
+{{#option}}
+## <a name="{{@key}}">{{@key}}</a>
+### <a name="{{@key}}/@OPTION">OPTION</a>
+{{> operation}}
+{{/option}}
+{{#patch}}
+## <a name="{{@key}}">{{@key}}</a>
+### <a name="{{@key}}/@PATCH">PATCH</a>
+{{> operation}}
+{{/patch}}
+{{#head}}
+## <a name="{{@key}}">{{@key}}</a>
+### <a name="{{@key}}/@HEAD">HEAD</a>
+{{> operation}}
+{{/head}}
+{{/this}}
+{{/each}}
+# Definitions
+{{#each definitions}}
+## <a name="/definitions/{{key}}">{{@key}}</a>
+<table border="1">
+    <tr>
+        <th>name</th>
+        <th>type</th>
+        <th>required</th>
+        <th>description</th>
+        <th>example</th>
+    </tr>
+    {{#each this.properties}}
+        <tr>
+            <td>{{@key}}</td>
+            <td>
+                {{#ifeq type "array"}}
+                {{#items.$ref}}
+                    {{type}}[<a href="{{items.$ref}}">{{basename items.$ref}}</a>]
+                {{/items.$ref}}
+                {{^items.$ref}}{{type}}[{{items.type}}]{{/items.$ref}}
+                {{else}}
+                    {{#$ref}}<a href="{{$ref}}">{{basename $ref}}</a>{{/$ref}}
+                    {{^$ref}}{{type}}{{#format}} ({{format}}){{/format}}{{/$ref}}
+                {{/ifeq}}
+            </td>
+            <td>{{#required}}required{{/required}}{{^required}}optional{{/required}}</td>
+            <td>{{#description}}{{{description}}}{{/description}}{{^description}}-{{/description}}</td>
+            <td>{{example}}</td>
+        </tr>
+    {{/each}}
+</table>
+{{/each}}

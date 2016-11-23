@@ -1,0 +1,45 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "api文档.",
+    "version" : "v1",
+    "title" : "Api documentation"
+  },
+  "host" : "127.0.0.1:8080",
+  "basePath" : "/api",
+  "tags" : [ {
+    "name" : "Demo操作类"
+  }, {
+    "name" : "框架接口"
+  } ],
+  "schemes" : [ "http" ],
+  "paths" : {
+    "/api/system/login" : {
+      "post" : {
+        "tags" : [ "框架接口" ],
+        "summary" : "登录",
+        "description" : "",
+        "operationId" : "login",
+        "parameters" : [ {
+          "name" : "account",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}

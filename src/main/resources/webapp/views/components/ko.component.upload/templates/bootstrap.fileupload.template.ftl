@@ -1,0 +1,1 @@
+<input type="file" class="upload" data-bind="blur: initUpload(window.event)"/>
