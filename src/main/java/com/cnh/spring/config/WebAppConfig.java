@@ -62,5 +62,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 .addResourceLocations("classpath:/webapp/static/");
         registry.addResourceHandler("/store/**")
                 .addResourceLocations("classpath:/webapp/store/");
+        registry.addResourceHandler("/minify/**")
+                .addResourceLocations("classpath:/webapp/minify/");
     }
 }

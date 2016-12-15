@@ -1,5 +1,6 @@
 package com.cnh.frame.wraps;
 
+import com.cnh.frame.crud.base.constant.CONSTANT;
 import com.cnh.frame.holders.ApplicationYmlHolder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +76,7 @@ public class XlsExportWrap<T> {
     public String exportExcel(String sheetTitle, String[] headers, String[] properties, List<T> dataList) throws IOException {
         HttpServletRequest request = RequestWrap.getRequest();
         String relativePath = StringWrap.endBy(xlsStoreRelativePath, "/") + "export/" + sheetTitle + "/" + System.currentTimeMillis() + ".xls";
-        String path = RequestWrap.getRealPath(request, "webapp/" + relativePath);
+        String path = RequestWrap.getRealPath(CONSTANT.WEBAPP + relativePath);
         File f = new File(path);
         if (!f.exists() && !f.getParentFile().exists()) {
             boolean mkdirs = f.getParentFile().mkdirs();

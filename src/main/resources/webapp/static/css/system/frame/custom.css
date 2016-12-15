@@ -71,6 +71,12 @@ form .form-group label {
 .table-detail>tbody>tr>td, .table-detail>tbody>tr>th, .table-detail>tfoot>tr>td, .table-detail>tfoot>tr>th, .table-detail>thead>tr>td, .table-detail>thead>tr>th {
     border-top-style: dotted;
 }
+.table tr:hover a.link {
+    color: #efefef;
+}
+.table tr:hover a.link:hover {
+    color: #fff;
+}
 .dialog .panel-body {
     position: relative;
 }
@@ -98,4 +104,104 @@ form .form-group label {
     text-align: center;
     color: #999;
     padding: 15px 0;
+}
+.photo {
+    float: left;
+    position: relative;
+    margin: 0 15px 0 0;
+}
+.photo img {
+    display: block;
+    width: 80px;
+    height: 120px;
+}
+.photo .remove {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    padding: 5px;
+    display: block;
+    cursor: pointer;
+    opacity: 0;
+    font-size: 20px;
+    background: #333;
+    color: #fff;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    -webkit-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    -ms-transform: scale(1.2);
+    -o-transform: scale(1.2);
+    transform: scale(1.2);
+    -webkit-transition: all .2s linear;
+    -moz-transition: all .2s linear;
+    -ms-transition: all .2s linear;
+    -o-transition: all .2s linear;
+    transition: all .2s linear;
+}
+.photo:hover .remove {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+}
+.photo .remove:hover {
+    background: #ddd;
+    color: red;
+}
+.select2 {
+    width: 100% !important;
+}
+.bootstrap-select.btn-group .dropdown-menu {
+    left: 0;
+}
+.required {
+    color: red;
+}
+textarea.form-control {
+    resize: none;
+    height: 100px;
+}
+.icon-list ul {
+    width: 1000px;
+    margin: 0;
+    padding: 0 20px;
+    list-style: none;
+}
+.icon-list li {
+    float: left;
+    width: 240px;
+    padding: 0 10px;
+}
+.icon-list a {
+    display: block;
+    height: 40px;
+    padding: 0 10px;
+    font: 12px/40px 'microsoft yahei';
+    border-radius: 5px;
+    -webkit-transition: all .2s linear;
+    -moz-transition: all .2s linear;
+    -ms-transition: all .2s linear;
+    -o-transition: all .2s linear;
+    transition: all .2s linear;
+}
+.icon-list a i,
+.icon-list a span {
+    display: inline-block;
+    vertical-align: middle;
+}
+.icon-list li:hover a {
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    transform: scale(1.1);
+    background: #1d9d74;
+    color: #fff;
+}
+.bootstrap-select .dropdown-toggle {
+    padding: 6px 16px;
 }

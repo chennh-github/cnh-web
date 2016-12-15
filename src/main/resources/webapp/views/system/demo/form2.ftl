@@ -1,5 +1,6 @@
 <#import "/system/frame/main.ftl" as frame>
 <#import "/system/share/base/form.ftl" as form>
+<#import "/system/share/macro.ftl" as macro>
 
 <@frame.header>
     <@form.css />
@@ -9,6 +10,9 @@
                  static/js/asserts/bootstrap-select/v1.7.3/css/bootstrap-select.css,
                  static/js/asserts/select2/v4.0.3/css/select2.css,
                  static/js/asserts/dropzone/v4.3.0/css/dropzone.css"/>
+<script>
+    var id = "${id!''}";
+</script>
 </@frame.header>
 <@frame.block modular="表单页">
 
@@ -105,6 +109,23 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-sm-3 to-right">Image</label>
+
+            <div class="col-sm-6">
+                <div>
+                    <div class="row" style="display: none;" data-bind="visible: model.entity.photo().length, foreach: {data: model.entity.photo, as: 'url'}">
+                        <div class="photo" style="margin-right: 15px;">
+                            <a class="thumbnail" href="javascript:void(0);">
+                                <img data-bind="attr: {src: master.fmt.imgUrl(url)}">
+                                <i class="remove fa fa-remove" data-bind="click: $root.removeUpload.bind($root, 'model.entity.photo', $index())"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <a href="javascript: void(0);" class="btn btn-primary" data-bind="click: showUploadDialog.bind($root, 'model.entity.photo', {businessType: 'demo', maxCount: 5})">图片管理</a>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-sm-3 to-right">Date: 9999-99-99</label>
 
             <div class="col-sm-6">
@@ -184,6 +205,7 @@
         </div>
     </div>
 </form>
+<@macro.upload />
 
 </@frame.block>
 <@frame.footer>

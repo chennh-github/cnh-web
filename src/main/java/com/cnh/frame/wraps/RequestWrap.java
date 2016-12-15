@@ -157,11 +157,10 @@ public class RequestWrap {
 
     /**
      * 取文件的物理路径
-     * @param request
      * @param relativePath
      * @return
      */
-    public static String getRealPath (HttpServletRequest request, String relativePath) {
+    public static String getRealPath (String relativePath) {
         String realPath = RequestWrap.class.getClassLoader().getResource("").getPath();
         return StringUtils.isBlank(relativePath) ? realPath : realPath + StringWrap.endBy(relativePath, File.separator);
     }

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace must be a full name of Dao interface -->
+<mapper namespace="com.cnh.mvc.system.adminInfo.dao.IAdminInfoDao">
+
+	<resultMap id="entity" type="com.cnh.mvc.system.adminInfo.entity.AdminInfo">
+		<result property="id" column="ID"/>
+		<result property="account" column="ACCOUNT"/>
+		<result property="password" column="PASSWORD"/>
+		<result property="type" column="TYPE"/>
+		<result property="name" column="NAME"/>
+		<result property="status" column="STATUS"/>
+		<result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+
+	<!-- select -->
+	<select id="select"  parameterType="map" resultMap="entity" >
+		SELECT *
+		FROM ADMIN_INFO
+		WHERE 1 = 1
+			<if test="id != null">
+				AND ID = #{id}
+			</if>
+			<if test="account != null">
+				AND ACCOUNT LIKE CONCAT('%', #{account},'%')
+			</if>
+			<if test="password != null">
+				AND PASSWORD LIKE CONCAT('%', #{password},'%')
+			</if>
+			<if test="type != null">
+				AND TYPE = #{type}
+			</if>
+			<if test="name != null">
+				AND NAME LIKE CONCAT('%', #{name},'%')
+			</if>
+			<if test="status != null">
+				AND STATUS = #{status}
+			</if>
+			<if test="createTimeBegin != null">
+				AND <![CDATA[ CREATE_TIME >= #{createTimeBegin} ]]>
+			</if>
+			<if test="createTimeEnd != null">
+				AND <![CDATA[ CREATE_TIME <= DATE_ADD(STR_TO_DATE(#{createTimeEnd}, '%Y-%m-%d'), INTERVAL 1 day)]]>
+			</if>
+			<if test="createTimeString != null">
+				AND <![CDATA[ DATE_FORMAT(CREATE_TIME, '%Y-%m-%d') = #{createTimeString}]]>
+			</if>
+		ORDER BY ID DESC
+	</select>
+
+	<!-- get -->
+	<select id="get" parameterType="long" resultMap="entity">
+		SELECT *
+		FROM ADMIN_INFO
+		WHERE ID = #{id}
+	</select>
+
+	<!-- insert -->
+	<insert id="insert" parameterType="com.cnh.mvc.system.adminInfo.entity.AdminInfo" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO ADMIN_INFO (
+        ID
+		<if test="account != null">,ACCOUNT </if>
+		<if test="password != null">,PASSWORD </if>
+		<if test="type != null">,TYPE </if>
+		<if test="name != null">,NAME </if>
+		<if test="status != null">,STATUS </if>
+		,CREATE_TIME
+        ) VALUES (
+		null
+		<if test="account != null">,#{account} </if>
+		<if test="password != null">,#{password} </if>
+		<if test="type != null">,#{type} </if>
+		<if test="name != null">,#{name} </if>
+		<if test="status != null">,#{status} </if>
+		,SYSDATE()
+        )
+	</insert>
+
+	<insert id="inserts">
+        INSERT INTO ADMIN_INFO (
+        ID
+        ,ACCOUNT
+        ,PASSWORD
+        ,TYPE
+        ,NAME
+        ,STATUS
+        ,CREATE_TIME
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (null
+            ,#{item.account}
+            ,#{item.password}
+            ,#{item.type}
+            ,#{item.name}
+            ,#{item.status}
+            ,#{item.createTimeString}
+            )
+        </foreach>
+	</insert>
+
+
+	<!-- update -->
+	<update id="update" parameterType="com.cnh.mvc.system.adminInfo.entity.AdminInfo">
+		UPDATE ADMIN_INFO
+		<set> ID = #{id}
+			<if test="account != null">,ACCOUNT = #{account}</if>
+			<if test="password != null">,PASSWORD = #{password}</if>
+			<if test="type != null">,TYPE = #{type}</if>
+			<if test="name != null">,NAME = #{name}</if>
+			<if test="status != null">,STATUS = #{status}</if>
+			<if test="createTimeString != null">,CREATE_TIME = #{createTimeString} </if>
+		</set>
+        WHERE ID = #{id}
+	</update>
+
+	<!-- delete -->
+	<delete id="delete" parameterType="int">
+		DELETE FROM ADMIN_INFO
+		WHERE ID = #{id}
+	</delete>
+
+	<!-- deletes -->
+	<delete id="deletes">
+		DELETE FROM ADMIN_INFO
+		WHERE ID IN
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+        	#{item}
+       </foreach>
+	</delete>
+
+	<!-- ****************************************** custom methods begin **************************************************** -->
+
+
+</mapper>

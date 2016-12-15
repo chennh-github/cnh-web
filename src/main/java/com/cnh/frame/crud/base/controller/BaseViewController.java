@@ -3,6 +3,7 @@ package com.cnh.frame.crud.base.controller;
 import com.cnh.frame.crud.base.constant.CONSTANT;
 import com.cnh.frame.crud.base.entity.BaseEntity;
 import com.cnh.frame.crud.base.service.BaseService;
+import com.cnh.frame.wraps.RequestWrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,7 @@ public abstract class BaseViewController<T extends BaseEntity> {
      */
     @RequestMapping("index")
     public ModelAndView index () {
-        return new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/" + getModularName() + "/index");
+        return new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/" + getModularName() + "/index", RequestWrap.getMap(RequestWrap.getRequest()));
     }
 
     /**
@@ -44,7 +45,7 @@ public abstract class BaseViewController<T extends BaseEntity> {
      */
     @RequestMapping("form")
     public ModelAndView form () throws Exception {
-        return new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/"  + getModularName() + "/form");
+        return new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/"  + getModularName() + "/form", RequestWrap.getMap(RequestWrap.getRequest()));
     }
 
     /**
@@ -55,7 +56,7 @@ public abstract class BaseViewController<T extends BaseEntity> {
      */
     @RequestMapping("form/{id}")
     public ModelAndView form (@PathVariable("id") Long id) throws Exception {
-        ModelAndView modelAndView = new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/"  + getModularName() + "/form");
+        ModelAndView modelAndView = new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/"  + getModularName() + "/form", RequestWrap.getMap(RequestWrap.getRequest()));
         if (id != null && id != 0) {
             T entity = getService().get(id);
             modelAndView.getModelMap().put("entity", entity);
@@ -72,7 +73,7 @@ public abstract class BaseViewController<T extends BaseEntity> {
      */
     @RequestMapping("detail/{id}")
     public ModelAndView detail (@PathVariable("id") Long id) throws Exception {
-        ModelAndView modelAndView = new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/"  + getModularName() + "/detail");
+        ModelAndView modelAndView = new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/"  + getModularName() + "/detail", RequestWrap.getMap(RequestWrap.getRequest()));
         if (id != null && id != 0) {
             T entity = getService().get(id);
             modelAndView.getModelMap().put("entity", entity);

@@ -1,4 +1,15 @@
-;(function () {
+;(function ($, viewModel) {
+    "use strict";
+
+    $.extend(true, viewModel, {
+        model: {
+            entity: {
+                id: id,
+                photo: []
+            }
+        }
+    });
+
 
 
     $(function () {
@@ -29,4 +40,4 @@
         });
     });
 
-}());
+}(jQuery, (window.viewModel || (window.viewModel = {}))));

@@ -6,3 +6,5 @@
 <p>${i18n['info']}</p>
 
 <p>${i18n.all.success}</p>
+
+<@link href="static/css/a.css" />

@@ -1,0 +1,6 @@
+html body {
+    background: url("../images/aaa/a.jpg");
+    background: url("./images/aaa/a.jpg");
+    background: url("/images/aaa/a.jpg");
+    background: url('images/aaa/a.jpg');
+}

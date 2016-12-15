@@ -11,9 +11,9 @@
 
         master = global["master"] || (global["master"] = {}),
 
-        toastr = global["toastr"],
+        toastr = global["toastr"] || (global['toastr'] = {}),
 
-        swal = global["swal"],
+        swal = global["swal"] || (global['swal'] = {}),
 
         FULL_PATH = global["fullPath"],
 
@@ -73,7 +73,7 @@
                 } else if (!/^http/.test(url)) {
                     url = IMG_SHOW_ROOT + url;
                 }
-                return "<img src='" + url + "' class='table-img' />";
+                return "<img src='" + url + "' class='table-img' data-src='" + url + "' />";
             },
             /**
              * 返回多个img图像
@@ -748,6 +748,58 @@
                 });
             },
             /**
+             * 显示带iframe的dialog
+             * @param $dialog
+             * @param src
+             */
+            showIframeDialog: function ($dialog, src) {
+                var $body = $dialog.find(".panel-body"),
+                    $loading = $('<div class="panel-refreshing"><div class="spinner"><div class="se rotating-plane"></div></div></div>'),
+                    $iframe = $('<iframe style="border: none; display: none; position: absolute; left: 0;top: 0; width: 100%; height: 100%; overflow: auto;"></iframe>'),
+                    iframe = $iframe[0],
+                    $selectBtn = $dialog.find(".btn-select");
+
+                function iframeLoaded() {
+                    if (!iframe.src) {
+                        return;
+                    }
+                    iframe.contentWindow.$dialog = $dialog;
+                    $body.removeClass("panel-loading");
+                    $loading.remove();
+                    if (iframe.detachEvent) {
+                        iframe.detachEvent("onload", iframeLoaded);
+                    } else {
+                        iframe.onload = null;
+                    }
+                    $selectBtn.on("click.select", function () {
+                        var data = koUnwrap(iframe.contentWindow.getFileList());
+                        if (window["viewModel"] && $.isFunction(window["viewModel"]["afterUpload"])) {
+                            window["viewModel"]["afterUpload"]([].concat.apply(data), $dialog.data("upload-options"));
+                        }
+                        utils.hideDialog($dialog);
+                    });
+                    $iframe.show();
+                }
+
+                function load() {
+                    $body.addClass("panel-loading").empty().append($loading).append($iframe);
+                    $selectBtn.off("click.select");
+                    iframe.src = src;
+                }
+
+                $body.addClass("panel-loading").empty();
+                if (iframe.attachEvent) {
+                    iframe.attachEvent("onload", iframeLoaded);
+                } else {
+                    iframe.onload = iframeLoaded;
+                }
+                if ($dialog.is(":hidden")) {
+                    this.showDialog($dialog, load);
+                } else {
+                    load();
+                }
+            },
+            /**
              * 载入初始的图片
              * @param $dom
              * @param imgList
@@ -775,6 +827,14 @@
                             fn.call(this);
                         }
                     });
+            },
+            /**
+             * 延迟执行
+             * @param time
+             * @param fn
+             */
+            delay: function (time, fn) {
+                setTimeout(fn, time);
             }
         },
         mode = {
@@ -791,6 +851,176 @@
                     return instance || (instance = objConstructor.apply(this, arguments));
                 }
             }
+        },
+        work = {
+            FILE: {
+                IMAGE: {
+                    EXTS: ["jpg", "jpeg", "png", "gif"],
+                    MAX_SIZE: 2 * 1024 * 1024
+                },
+                XLS: {
+                    EXTS: ['xls'],
+                    MAX_SIZE: 10 * 1024 * 1024
+                }
+            },
+            /**
+             * 导入excel
+             * @param fileInput
+             * @param options
+             */
+            uploadXls: function (fileInput, options) {
+                options = $.extend(true, {
+                    url: fullPath + "xls/importXls",
+                    typeOrValidateFn: "XLS",
+                    success: function (result, status) {
+                        if (result.status) {
+                            master.toast.success("导入成功", "请从下载的Excel中查证记录是否导入");
+                            if ($.isFunction(options.afterUpload)) {
+                                options.afterUpload(result.data, options.data, fileInput);
+                            }
+                        } else {
+                            $.alert(result.message);
+                        }
+                        $("body").uncover();
+                    },
+                    error: function (data, status, e) {
+                        master.toast.error("导入失败");
+                        $("body").uncover();
+                    }
+                }, options);
+                $("body").cover();
+                work.upload(fileInput, options);
+            },
+            /**
+             * 上传图片
+             * @param fileInput
+             * @param options
+             */
+            uploadImage: function (fileInput, options) {
+                options = $.extend(true, {
+                    url: fullPath + "image/upload",
+                    typeOrValidateFn: "IMAGE",
+                    success: function (result, status) {
+                        if (result.status === 1) {
+                            master.toast.success("上传成功!");
+                            if ($.isFunction(options.afterUpload)) {
+                                options.afterUpload(result.data, options.data, fileInput);
+                            }
+                        } else {
+                            master.toast.warning("上传失败!");
+                        }
+                        $("body").uncover();
+                    },
+                    error: function (data, status, e) {
+                        master.toast.warning("上传异常!");
+                        $("body").uncover();
+                    }
+                }, options);
+                $("body").cover();
+                work.upload(fileInput, options);
+            },
+            /**
+             * 文件上传
+             * @param fileInput
+             * @param options
+             */
+            upload: function (fileInput, options) {
+                options = $.extend(true, {
+                    url: "",
+                    data: {},
+                    typeOrValidateFn: "IMAGE",
+                    success: $.noop,
+                    error: $.noop
+                }, options);
+                if ($.isFunction(options.typeOrValidateFn)) {
+                    if (options.typeOrValidateFn() !== true) {
+                        return;
+                    }
+                } else {
+                    var fileType = work.FILE[options.typeOrValidateFn] || work.FILE.IMAGE;
+                    if (work.validateUpload(fileInput, fileType.EXTS, fileType.MAX_SIZE) !== true) {
+                        return;
+                    }
+                }
+                $.ajaxFileUpload({						// 异步上传
+                    url: options.url,
+                    secureuri: false,
+                    fileElementId: fileInput.id,
+                    dataType: 'json',
+                    data: options.data,
+                    success: options.success,
+                    error: options.error
+                });
+            },
+            validateUpload: function (file, exts, maxSize) {
+                var ua = window.navigator.userAgent;
+                var src = file.value;
+                var ext = (src.substring(src.indexOf(".") + 1) || "").toLowerCase();
+                var fileSize = 0;
+                // 验证文件格式
+                if (ko.utils.arrayIndexOf(exts, ext) === -1) {
+                    master.toast.warning("只允许上传 " + exts.join(",") + " 格式的文件!");
+                    return false;
+                }
+                //验证文件大小
+                if (maxSize > 0) {
+                    if (ua.indexOf("MSIE") >= 1) {
+                        var dynImg = document.getElementById("dynImg");
+                        dynImg.dynsrc = src;
+                        fileSize = dynImg.fileSize;
+                    } else if (file.files) {
+                        fileSize = file.files[0].size;
+                    }
+                    if (fileSize == -1) {
+                        master.toast.warning("请选择文件!");
+                        return false;
+                    } else if (fileSize > maxSize) {
+                        master.toast.warning("文件不得大于 " + Math.round(maxSize / 1024) + " KB");
+                        return false;
+                    }
+                }
+                return true;
+            },
+            /**
+             * 上传后回调函数
+             * @param response
+             * @param data
+             * @param viewModel
+             */
+            afterUpload: function (response, data, viewModel) {
+                if (!response.length) {
+                    return;
+                }
+                if (data["koRefer"]) {
+                    var o = master.fmt.referKo(data["koRefer"], viewModel);
+                    if (master.ko.isKoArray(o)) {
+                        if (response.length > 1) {
+                            $.each(response, function (i, v) {
+                                response[i] = (v || "").replace(IMG_SHOW_ROOT, '');
+                            });
+                            o(response);
+                        } else {
+                            o.push(response[0]);
+                        }
+                    } else {
+                        o(response[0]);
+                    }
+                }
+            },
+            /**
+             * 移除图片回调函数
+             * @param koRefer
+             * @param index
+             * @param viewModel
+             */
+            removeUpload: function (koRefer, index, viewModel) {
+                var o = master.fmt.referKo(koRefer, viewModel);
+                if (master.ko.isKoArray(o)) {
+                    o.splice(index);
+                } else {
+                    o("");
+                }
+            }
         };
 
 
@@ -800,7 +1030,8 @@
         sweet: sweet,
         utils: utils,
         ko: koWrap,
-        mode: mode
+        mode: mode,
+        work: work
     });
 
 

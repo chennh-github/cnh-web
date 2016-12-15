@@ -11,7 +11,7 @@
 				}">
 	</div>
 
-	<div class="form-group" data-bind="if: setting.fileList().length <= setting.upload.maxFileCount">
+	<div class="form-group" data-bind="if: setting.fileList().length < setting.upload.maxFileCount">
 		<div data-bind="if: setting.fileList().length">
 			<div class="alert alert-warning">
 				<strong>注意：</strong>删除图片前请确认保存了已上传的图片

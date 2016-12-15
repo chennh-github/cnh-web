@@ -66,6 +66,10 @@ logging:
 
 # 自定义属性配置
 custom:
+    # 静态资源
+    static:
+        # 开启合并压缩
+        minify: @static.minify@
     # 跨域配置
     cors:
         # 允许的跨域来源

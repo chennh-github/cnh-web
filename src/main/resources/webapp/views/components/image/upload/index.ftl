@@ -38,7 +38,7 @@
     var staticVersion = "${staticVersion}";
     var fullPath = "<@path path=''/>"
 </script>
-<@script src="static/js/asserts/jquery/v2.1.4/js/jquery.js,
+<@script src="static/js/asserts/jquery/v2.1.4/js/jquery.min.js,
               static/js/global/require/require-config.js" />
 <script src="<@path path='static/js/asserts/requirejs/v2.1.11/js/require.js' />"
         data-main="<@path path='static/js/global/require/require-main' />"

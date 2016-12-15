@@ -1,5 +1,6 @@
 package com.cnh.mvc.share.xls.controller;
 
+import com.cnh.frame.crud.base.constant.CONSTANT;
 import com.cnh.frame.crud.utils.Assist;
 import com.cnh.frame.wraps.FileWrap;
 import com.cnh.frame.wraps.RequestWrap;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 /**
  * ${Description}
@@ -44,6 +46,9 @@ public class XlsController {
     private String xlsStoreRelativePath;
 
 
+    private String[] allowedExts = new String[]{"xls"};
+
+
     /**
      * xls文件上传
      *
@@ -56,13 +61,13 @@ public class XlsController {
     @ResponseBody
     public Object importXls(MultipartHttpServletRequest multipartRequest, @RequestParam("xlsName") String name) throws Exception {
 
-        Assist.threw(!FileWrap.isValidExt(multipartRequest, new String[]{"xls", "xlsx"}), "文件格式错误，只允许上传.xls .xlsx格式的Excel文件");
+        Assist.threw(!FileWrap.isValidExt(multipartRequest, allowedExts), "文件格式错误，只允许上传" + Arrays.toString(allowedExts) + "格式的Excel文件");
 
         // 取指定的处理服务
         IXlsImportHandler xlsImportHandler = XlsServiceRegister.getXlsImportHandler(name);
         Assist.notNull(xlsImportHandler, String.format("未指定名为[%s]的处理服务", name));
 
-        String[] xlsFileRelativePaths = UploadWrap.uploadFilesAndReturnFileRelativePaths(multipartRequest, RequestWrap.getRealPath(multipartRequest, "webapp/"), StringWrap.endBy(xlsStoreRelativePath, "/") + "import/", "xls_");
+        String[] xlsFileRelativePaths = UploadWrap.uploadFilesAndReturnFileRelativePaths(multipartRequest, RequestWrap.getRealPath(CONSTANT.WEBAPP), StringWrap.endBy(xlsStoreRelativePath, "/") + "import/", "xls_");
 
         Assist.threw(xlsFileRelativePaths.length == 0, "保存excel文件错误");
 
@@ -70,7 +75,7 @@ public class XlsController {
             FileInputStream fis = null;
             OutputStream fos = null;
             try {
-                String xlsFileRealPath = RequestWrap.getRealPath(multipartRequest, "webapp/" + xlsFileRelativePath);
+                String xlsFileRealPath = RequestWrap.getRealPath(CONSTANT.WEBAPP + xlsFileRelativePath);
                 fis = new FileInputStream(xlsFileRealPath);
                 String ext = xlsFileRealPath.substring(xlsFileRealPath.lastIndexOf(".") + 1);
                 Workbook workbook = null;

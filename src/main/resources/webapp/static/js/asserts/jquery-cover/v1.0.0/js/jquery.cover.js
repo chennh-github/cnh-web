@@ -17,6 +17,9 @@
             var scripts = document.scripts;
             var src = scripts[scripts.length - 1].src;
             var minifyIndex = src.indexOf("?f=");
+            if (window.fullPath &&  src.indexOf("/minify/") > -1) {
+                return window.fullPath + "static/js/asserts/jquery-cover/v1.0.0/js/";
+            }
             return minifyIndex > -1 ? src.substring(0, minifyIndex) + "auxo/admin/forcestudy/extends/jquery/cover/" :
                 src.substring( 0, scripts[scripts.length - 1].src.lastIndexOf( "/" ) + 1 );
         } () ),

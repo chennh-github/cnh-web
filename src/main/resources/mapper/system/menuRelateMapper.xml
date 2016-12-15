@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace must be a full name of Dao interface -->
+<mapper namespace="com.cnh.mvc.system.menuRelate.dao.IMenuRelateDao">
+
+	<resultMap id="entity" type="com.cnh.mvc.system.menuRelate.entity.MenuRelate">
+		<result property="id" column="ID"/>
+		<result property="menuId" column="MENU_ID"/>
+		<result property="relateId" column="RELATE_ID"/>
+		<result property="type" column="TYPE"/>
+		<result property="status" column="STATUS"/>
+		<result property="orderNo" column="ORDER_NO"/>
+		<result property="roleable" column="ROLEABLE"/>
+		<result property="code" column="CODE"/>
+		<result property="menuTitle" column="MENU_TITLE"/>
+		<result property="menuParentId" column="MENU_PARENT_ID"/>
+    </resultMap>
+
+	<!-- select -->
+	<select id="select"  parameterType="map" resultMap="entity" >
+		SELECT *
+		FROM MENU_RELATE
+		WHERE 1 = 1
+			<if test="id != null">
+				AND ID = #{id}
+			</if>
+			<if test="menuId != null">
+				AND MENU_ID = #{menuId}
+			</if>
+			<if test="relateId != null">
+				AND RELATE_ID = #{relateId}
+			</if>
+			<if test="type != null">
+				AND TYPE = #{type}
+			</if>
+			<if test="status != null">
+				AND STATUS = #{status}
+			</if>
+			<if test="orderNo != null">
+				AND ORDER_NO = #{orderNo}
+			</if>
+			<if test="roleable != null">
+				AND ROLEABLE = #{roleable}
+			</if>
+			<if test="code != null">
+				AND CODE LIKE CONCAT('%', #{code},'%')
+			</if>
+			<if test="menuTitle != null">
+				AND MENU_TITLE LIKE CONCAT('%', #{menuTitle},'%')
+			</if>
+			<if test="menuParentId != null">
+				AND MENU_PARENT_ID = #{menuParentId}
+			</if>
+		ORDER BY ID DESC
+	</select>
+
+	<!-- get -->
+	<select id="get" parameterType="long" resultMap="entity">
+		SELECT *
+		FROM MENU_RELATE
+		WHERE ID = #{id}
+	</select>
+
+	<!-- insert -->
+	<insert id="insert" parameterType="com.cnh.mvc.system.menuRelate.entity.MenuRelate" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO MENU_RELATE (
+        ID
+		<if test="menuId != null">,MENU_ID </if>
+		<if test="relateId != null">,RELATE_ID </if>
+		<if test="type != null">,TYPE </if>
+		<if test="status != null">,STATUS </if>
+		<if test="orderNo != null">,ORDER_NO </if>
+		<if test="roleable != null">,ROLEABLE </if>
+		<if test="code != null">,CODE </if>
+		<if test="menuTitle != null">,MENU_TITLE </if>
+		<if test="menuParentId != null">,MENU_PARENT_ID </if>
+        ) VALUES (
+		null
+		<if test="menuId != null">,#{menuId} </if>
+		<if test="relateId != null">,#{relateId} </if>
+		<if test="type != null">,#{type} </if>
+		<if test="status != null">,#{status} </if>
+		<if test="orderNo != null">,#{orderNo} </if>
+		<if test="roleable != null">,#{roleable} </if>
+		<if test="code != null">,#{code} </if>
+		<if test="menuTitle != null">,#{menuTitle} </if>
+		<if test="menuParentId != null">,#{menuParentId} </if>
+        )
+	</insert>
+
+	<insert id="inserts">
+        INSERT INTO MENU_RELATE (
+        ID
+        ,MENU_ID
+        ,RELATE_ID
+        ,TYPE
+        ,STATUS
+        ,ORDER_NO
+        ,ROLEABLE
+        ,CODE
+        ,MENU_TITLE
+        ,MENU_PARENT_ID
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (null
+            ,#{item.menuId}
+            ,#{item.relateId}
+            ,#{item.type}
+            ,#{item.status}
+            ,#{item.orderNo}
+            ,#{item.roleable}
+            ,#{item.code}
+            ,#{item.menuTitle}
+            ,#{item.menuParentId}
+            )
+        </foreach>
+	</insert>
+
+
+	<!-- update -->
+	<update id="update" parameterType="com.cnh.mvc.system.menuRelate.entity.MenuRelate">
+		UPDATE MENU_RELATE
+		<set> ID = #{id}
+			<if test="menuId != null">,MENU_ID = #{menuId}</if>
+			<if test="relateId != null">,RELATE_ID = #{relateId}</if>
+			<if test="type != null">,TYPE = #{type}</if>
+			<if test="status != null">,STATUS = #{status}</if>
+			<if test="orderNo != null">,ORDER_NO = #{orderNo}</if>
+			<if test="roleable != null">,ROLEABLE = #{roleable}</if>
+			<if test="code != null">,CODE = #{code}</if>
+			<if test="menuTitle != null">,MENU_TITLE = #{menuTitle}</if>
+			<if test="menuParentId != null">,MENU_PARENT_ID = #{menuParentId}</if>
+		</set>
+        WHERE ID = #{id}
+	</update>
+
+	<!-- delete -->
+	<delete id="delete" parameterType="int">
+		DELETE FROM MENU_RELATE
+		WHERE ID = #{id}
+	</delete>
+
+	<!-- deletes -->
+	<delete id="deletes">
+		DELETE FROM MENU_RELATE
+		WHERE ID IN
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+        	#{item}
+       </foreach>
+	</delete>
+
+	<!-- ****************************************** custom methods begin **************************************************** -->
+
+
+</mapper>

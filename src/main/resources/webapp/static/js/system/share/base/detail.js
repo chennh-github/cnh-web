@@ -42,11 +42,46 @@
                     master.ko.fromJS(that.model.entity, entity);
                 });
             }
+        },
+        /**
+         * 删除后回调函数
+         */
+        afterDelete: function () {
+            master.sweet.success("删除成功");
+            master.utils.delay(2000, function () {
+                location.assign('index');
+            });
+        },
+        /**
+         * 删除记录
+         * @param id
+         */
+        deleteItem: function (isSilent) {
+            var that = this,
+                id = global["id"];
+            if (typeof isSilent !== "boolean") {
+                isSilent = false;
+            }
+            function doDelete() {
+                service.del(id).then(function () {
+                    that.afterDelete();
+                });
+            }
+            if (isSilent) {
+                doDelete();
+            } else {
+                $.confirm({
+                    title: "确定删除该记录？",
+                    content: "该操作不可恢复，点击确定继续",
+                    confirm: function () {
+                        doDelete();
+                    }
+                });
+            }
         }
     });
 
-    $(function () {
-        viewModel.initViewModel();
-    });
+    // 开启ko延迟更新
+    ko.options.defer = true;
 
 }(jQuery, (window.viewModel || (window.viewModel = {}))));

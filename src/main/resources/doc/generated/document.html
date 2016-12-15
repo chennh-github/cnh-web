@@ -20,6 +20,16 @@ api文档.
 
 
 
+* <a href="#/api/system/menuInfo/drop">**/api/system/menuInfo/drop**</a><br/>
+<a href="#/api/system/menuInfo/drop/@PUT">PUT zTree拖拽</a><br/>
+
+
+
+* <a href="#/api/system/menuInfo/update/dependency">**/api/system/menuInfo/update/dependency**</a><br/>
+<a href="#/api/system/menuInfo/update/dependency/@POST">POST 更新菜单依赖</a><br/>
+
+
+
 
 
 
@@ -100,6 +110,145 @@ api文档.
 | Status Code | Reason      | Response Model |
 |-------------|-------------|----------------|
 | 200    | successful operation | |
+
+
+
+
+
+
+
+
+
+
+
+## <a name="/api/system/menuInfo/drop">/api/system/menuInfo/drop</a>
+### <a name="/api/system/menuInfo/drop/@PUT">PUT</a>
+
+<a id="drop">zTree拖拽</a>
+
+
+
+
+
+
+
+
+
+#### Request
+
+
+
+##### Parameters
+
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Located in</th>
+        <th>Required</th>
+        <th>Description</th>
+        <th>Default</th>
+        <th>Schema</th>
+    </tr>
+
+
+
+<tr>
+    <th>id</th>
+    <td>query</td>
+    <td>yes</td>
+    <td></td>
+    <td> - </td>
+
+    
+            <td>integer (int64)</td>
+    
+
+</tr>
+
+<tr>
+    <th>targetId</th>
+    <td>query</td>
+    <td>yes</td>
+    <td></td>
+    <td> - </td>
+
+    
+            <td>integer (int64)</td>
+    
+
+</tr>
+
+<tr>
+    <th>moveType</th>
+    <td>query</td>
+    <td>yes</td>
+    <td></td>
+    <td> - </td>
+
+    
+            <td>string </td>
+    
+
+</tr>
+
+
+</table>
+
+
+
+#### Response
+
+
+
+
+| Status Code | Reason      | Response Model |
+|-------------|-------------|----------------|
+| default    | successful operation |  - |
+
+
+
+
+
+
+
+
+
+
+
+
+
+## <a name="/api/system/menuInfo/update/dependency">/api/system/menuInfo/update/dependency</a>
+### <a name="/api/system/menuInfo/update/dependency/@POST">POST</a>
+
+<a id="updateDependency">更新菜单依赖</a>
+
+
+
+
+
+
+
+
+
+#### Request
+
+
+
+##### Parameters
+
+
+
+
+
+
+#### Response
+
+
+
+
+| Status Code | Reason      | Response Model |
+|-------------|-------------|----------------|
+| default    | successful operation |  - |
 
 
 

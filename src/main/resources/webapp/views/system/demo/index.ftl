@@ -116,7 +116,7 @@
                 </a>
                 <a href="form" class="btn btn-primary">Form Page</a>
                 <a href="javascript: void(0);" class="btn btn-primary"
-                   data-bind="click: showFormDialog.bind($root, null)">Form Dialog</a>
+                   data-bind="click: showFormDialog.bind($root, null, 'form2')">Form Dialog</a>
             </div>
         </div>
 

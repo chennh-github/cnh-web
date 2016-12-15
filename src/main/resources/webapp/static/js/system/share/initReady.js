@@ -304,7 +304,8 @@
             $.extend(true, jconfirm.pluginDefaults, {
                 title: '系统提示',
                 confirmButton: '确定',
-                cancelButton: '关闭'
+                cancelButton: '关闭',
+                confirmButtonClass: 'btn-theme'
             });
 
             // 自动给file添加name和id

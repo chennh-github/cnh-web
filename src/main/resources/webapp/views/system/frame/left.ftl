@@ -84,9 +84,9 @@
         <span class="name">Options</span>
     </li>
     <li class="@@activate-dashboard">
-        <a href="dashboard.html">
+        <a href="<@path path='system/demo/form2'/>">
             <i class="fa fa-tachometer"></i>
-            <span class="name">Dashboard</span>
+            <span class="name">Demo Form</span>
         </a>
     </li>
     <li class="active">

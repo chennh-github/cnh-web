@@ -14,4 +14,17 @@ public class CONSTANT {
     // 允许跨域的请求前缀
     public final static String ROUTE_CORS_PATH = "/cos";
 
+    public final static String WEBAPP = "webapp/";
+
+
+    /**
+     * ASC
+     */
+    public static final String ASC = "ASC";
+
+    /**
+     * DESC
+     */
+    public static final String DESC = "DESC";
+
 }

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace must be a full name of Dao interface -->
+<mapper namespace="com.cnh.mvc.system.menuInfo.dao.IMenuInfoDao">
+
+    <resultMap id="entity" type="com.cnh.mvc.system.menuInfo.entity.MenuInfo">
+        <result property="id" column="ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="url" column="URL"/>
+        <result property="menuType" column="MENU_TYPE"/>
+        <result property="describtion" column="DESCRIBTION"/>
+        <result property="parentId" column="PARENT_ID"/>
+        <result property="menuIcon" column="MENU_ICON"/>
+        <result property="code" column="CODE"/>
+        <result property="status" column="STATUS"/>
+        <result property="orderNo" column="ORDER_NO"/>
+        <result property="target" column="TARGET"/>
+    </resultMap>
+
+    <!-- select -->
+    <select id="select" parameterType="map" resultMap="entity">
+        SELECT *
+        FROM MENU_INFO
+        WHERE 1 = 1
+        <if test="id != null">
+            AND ID = #{id}
+        </if>
+        <if test="title != null">
+            AND TITLE LIKE CONCAT('%', #{title},'%')
+        </if>
+        <if test="url != null">
+            AND URL LIKE CONCAT('%', #{url},'%')
+        </if>
+        <if test="menuType != null">
+            AND MENU_TYPE = #{menuType}
+        </if>
+        <if test="describtion != null">
+            AND DESCRIBTION LIKE CONCAT('%', #{describtion},'%')
+        </if>
+        <if test="parentId != null">
+            <if test="parentId == 0">
+                AND (PARENT_ID = 0 OR PARENT_ID IS NULL)
+            </if>
+            <if test="parentId != 0">
+                AND PARENT_ID = #{parentId}
+            </if>
+        </if>
+        <if test="menuIcon != null">
+            AND MENU_ICON LIKE CONCAT('%', #{menuIcon},'%')
+        </if>
+        <if test="code != null">
+            AND CODE LIKE CONCAT('%', #{code},'%')
+        </if>
+        <if test="status != null">
+            AND STATUS = #{status}
+        </if>
+        <if test="orderNo != null">
+            AND ORDER_NO = #{orderNo}
+        </if>
+        <if test="target != null">
+            AND TARGET LIKE CONCAT('%', #{target},'%')
+        </if>
+        ORDER BY ORDER_NO ASC
+    </select>
+
+    <!-- get -->
+    <select id="get" parameterType="long" resultMap="entity">
+        SELECT *
+        FROM MENU_INFO
+        WHERE ID = #{id}
+    </select>
+
+    <!-- insert -->
+    <insert id="insert" parameterType="com.cnh.mvc.system.menuInfo.entity.MenuInfo" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO MENU_INFO (
+        ID
+        <if test="title != null">,TITLE</if>
+        <if test="url != null">,URL</if>
+        <if test="menuType != null">,MENU_TYPE</if>
+        <if test="describtion != null">,DESCRIBTION</if>
+        <if test="parentId != null">,PARENT_ID</if>
+        <if test="menuIcon != null">,MENU_ICON</if>
+        <if test="code != null">,CODE</if>
+        <if test="status != null">,STATUS</if>
+        <if test="orderNo != null">,ORDER_NO</if>
+        <if test="target != null">,TARGET</if>
+        ) VALUES (
+        null
+        <if test="title != null">,#{title}</if>
+        <if test="url != null">,#{url}</if>
+        <if test="menuType != null">,#{menuType}</if>
+        <if test="describtion != null">,#{describtion}</if>
+        <if test="parentId != null">,#{parentId}</if>
+        <if test="menuIcon != null">,#{menuIcon}</if>
+        <if test="code != null">,#{code}</if>
+        <if test="status != null">,#{status}</if>
+        <if test="orderNo != null">,#{orderNo}</if>
+        <if test="target != null">,#{target}</if>
+        )
+    </insert>
+
+    <insert id="inserts">
+        INSERT INTO MENU_INFO (
+        ID
+        ,TITLE
+        ,URL
+        ,MENU_TYPE
+        ,DESCRIBTION
+        ,PARENT_ID
+        ,MENU_ICON
+        ,CODE
+        ,STATUS
+        ,ORDER_NO
+        ,TARGET
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (null
+            ,#{item.title}
+            ,#{item.url}
+            ,#{item.menuType}
+            ,#{item.describtion}
+            ,#{item.parentId}
+            ,#{item.menuIcon}
+            ,#{item.code}
+            ,#{item.status}
+            ,#{item.orderNo}
+            ,#{item.target}
+            )
+        </foreach>
+    </insert>
+
+
+    <!-- update -->
+    <update id="update" parameterType="com.cnh.mvc.system.menuInfo.entity.MenuInfo">
+        UPDATE MENU_INFO
+        <set>ID = #{id}
+            <if test="title != null">,TITLE = #{title}</if>
+            <if test="url != null">,URL = #{url}</if>
+            <if test="menuType != null">,MENU_TYPE = #{menuType}</if>
+            <if test="describtion != null">,DESCRIBTION = #{describtion}</if>
+            <if test="parentId != null">,PARENT_ID = #{parentId}</if>
+            <if test="menuIcon != null">,MENU_ICON = #{menuIcon}</if>
+            <if test="code != null">,CODE = #{code}</if>
+            <if test="status != null">,STATUS = #{status}</if>
+            <if test="orderNo != null">,ORDER_NO = #{orderNo}</if>
+            <if test="target != null">,TARGET = #{target}</if>
+        </set>
+        WHERE ID = #{id}
+    </update>
+
+    <!-- delete -->
+    <delete id="delete" parameterType="int">
+        DELETE FROM MENU_INFO
+        WHERE ID = #{id}
+              OR PARENT_ID = #{id}
+    </delete>
+
+    <!-- deletes -->
+    <delete id="deletes">
+        DELETE FROM MENU_INFO
+        WHERE ID IN
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        OR PARENT_ID IN
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- ****************************************** custom methods begin **************************************************** -->
+
+    <select id="getMaxOrderNo" resultType="long">
+        SELECT IFNULL(MAX(ORDER_NO), 0)
+        FROM MENU_INFO
+        WHERE MENU_TYPE = #{orderType}
+        <if test="parentId != null">
+            AND PARENT_ID = #{parentId}
+        </if>
+    </select>
+
+    <select id="getCloserBiggerOne" resultMap="entity">
+        SELECT *
+        FROM MENU_INFO
+        WHERE MENU_TYPE = #{orderType}
+        <![CDATA[ AND ORDER_NO > #{orderNo} ]]>
+        <if test="parentId != null">
+            AND PARENT_ID = #{parentId}
+        </if>
+        ORDER BY ORDER_NO ASC
+        LIMIT 0, 1
+    </select>
+
+    <select id="getCloserSmallerOne" resultMap="entity">
+        SELECT *
+        FROM MENU_INFO
+        WHERE MENU_TYPE = #{orderType}
+        <![CDATA[ AND ORDER_NO < #{orderNo} ]]>
+        <if test="parentId != null">
+            AND PARENT_ID = #{parentId}
+        </if>
+        ORDER BY ORDER_NO DESC
+        LIMIT 0, 1
+    </select>
+
+    <select id="getBiggestOne" resultMap="entity">
+        SELECT *
+        FROM MENU_INFO
+        WHERE MENU_TYPE = #{orderType}
+        <if test="parentId != null">
+            AND PARENT_ID = #{parentId}
+        </if>
+        ORDER BY ORDER_NO DESC
+        LIMIT 0, 1
+    </select>
+
+    <select id="getSmallestOne" resultMap="entity">
+        SELECT *
+        FROM MENU_INFO
+        WHERE MENU_TYPE = #{orderType}
+        <if test="parentId != null">
+            AND PARENT_ID = #{parentId}
+        </if>
+        ORDER BY ORDER_NO ASC
+        LIMIT 0, 1
+    </select>
+
+    <update id="reduceOrderNo">
+        UPDATE MENU_INFO
+        SET ORDER_NO = ORDER_NO - 1
+        WHERE <![CDATA[ ORDER_NO > #{orderNo} ]]>
+        <![CDATA[ AND ORDER_NO <= #{targetOrderNo} ]]>
+        <if test="parentId != null">
+            AND PARENT_ID = #{parentId}
+        </if>
+        AND MENU_TYPE = #{orderType}
+    </update>
+
+    <update id="increaseOrderNo">
+        UPDATE MENU_INFO
+        SET ORDER_NO = ORDER_NO + 1
+        WHERE <![CDATA[ ORDER_NO < #{orderNo} ]]>
+        <![CDATA[ AND ORDER_NO >= #{targetOrderNo} ]]>
+        <if test="parentId != null">
+            AND PARENT_ID = #{parentId}
+        </if>
+        AND MENU_TYPE = #{orderType}
+    </update>
+
+</mapper>

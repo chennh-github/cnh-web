@@ -6,8 +6,8 @@
     <title>${title}</title>
 
     <!-- Fonts -->
-    <@link href="css/system/frame/css@family=Raleway.css,
-                 css/system/frame/css@family=Open+Sans.css" />
+    <@link href="static/css/system/frame/css@family=Raleway.css,
+                 static/css/system/frame/css@family=Open+Sans.css" />
     <!-- / Fonts -->
 
     <!-- Style Sheets -->
@@ -21,7 +21,7 @@
                  static/js/asserts/sweetalert/v1.0.1/css/sweetalert.css,
                  static/css/system/frame/themes/theme-all.css,
                  static/css/system/frame/style.css,
-                 static/css/system/frame/setting.css" />
+                 static/css/system/frame/setting.css" srcValue="/frame/main/"/>
     <!-- / Style Sheets -->
     <#nested/>
     <@link href="static/css/system/frame/custom.css" />
@@ -33,9 +33,9 @@
 </head>
 </#macro>
 
-<#macro body class="" modular="">
+<#macro body class="" modular="" wrapperClass="">
 <body data-theme="default" class="${class}">
-<div id="wrapper">
+<div id="wrapper" class="${wrapperClass}">
     <nav id="sidebar-nav" class="sidebar-nav">
         <div id="sidebar-wrapper" class="sidebar-wrapper" data-background="default">
             <#include "/system/frame/left.ftl">
@@ -86,6 +86,27 @@
 </div>
 </#macro>
 
+<#macro page class="" modular="">
+<body data-theme="default" class="${class}">
+<!-- Include the container-header -->
+    <#if modular != "">
+    <div id="container-header" class="container-header">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>${modular}</h2>
+            </div>
+        </div>
+    </div>
+    </#if>
+
+<!-- main container -->
+<div id="container-content" class="container-content">
+    <div id="bootstrap"  style="background: #fff;">
+        <#nested />
+    </div>
+</div>
+</#macro>
+
 <#macro block class="" modular="">
 <body data-theme="default" class="${class}">
 <div id="bootstrap" style="background: #fff; padding: 30px 0 50px;">
@@ -103,6 +124,7 @@
 
                   static/js/asserts/knockout/v3.4.0/js/knockout.js,
                   static/js/asserts/knockout-mapping/v2.4.1/js/knockout.mapping.js,
+                  static/js/global/ko/ko.extend.js,
 
 
                   static/js/asserts/jquery-cover/v1.0.0/js/jquery.cover.js,
@@ -120,7 +142,7 @@
                   static/js/system/frame/setting.js,
                   static/js/system/frame/main.js,
                   static/js/system/share/initReady.js,
-                  static/js/system/share/master.js" />
+                  static/js/system/share/master.js" srcValue="/frame/main/" />
     <#nested />
 </body>
 </#macro>

@@ -1,4 +1,5 @@
-;(function ($, service) {
+;
+(function ($, service) {
 
     "use strict";
 
@@ -94,6 +95,45 @@
                 url: fullPath + "xls/exportXls",
                 type: "POST",
                 data: master.utils.removeEmpty(data)
+            });
+        },
+        /**
+         * 上移
+         * @param data
+         * @returns {*|{trackMethods, trackWebSockets, ignoreURLs}}
+         */
+        moveUp: function (data) {
+            return $.ajax({
+                url: FULL_PATH + "api/system/" + MODULAR_NAME + "/moveUp",
+                type: "PUT",
+                dataType: "json",
+                data: data
+            });
+        },
+        /**
+         * 下移
+         * @param data
+         * @returns {*|{trackMethods, trackWebSockets, ignoreURLs}}
+         */
+        moveDown: function (data) {
+            return $.ajax({
+                url: FULL_PATH + "api/system/" + MODULAR_NAME + "/moveDown",
+                type: "PUT",
+                dataType: "json",
+                data: data
+            });
+        },
+        /**
+         * 置顶
+         * @param data
+         * @returns {*|{trackMethods, trackWebSockets, ignoreURLs}}
+         */
+        zTop: function (data) {
+            return $.ajax({
+                url: FULL_PATH + "api/system/" + MODULAR_NAME + "/zTop",
+                type: "PUT",
+                dataType: "json",
+                data: data
             });
         }
     });

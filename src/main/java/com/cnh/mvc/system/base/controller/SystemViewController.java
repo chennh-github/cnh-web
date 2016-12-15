@@ -1,11 +1,19 @@
 package com.cnh.mvc.system.base.controller;
 
-import com.cnh.frame.crud.base.constant.CONSTANT;
 import com.cnh.frame.crud.base.controller.BaseViewController;
+import com.cnh.frame.crud.base.controller.ViewController;
 import com.cnh.frame.crud.base.entity.BaseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.cnh.frame.crud.base.service.BaseService;
+import com.cnh.frame.crud.utils.Assist;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ${Description}
@@ -14,60 +22,68 @@ import org.springframework.web.servlet.ModelAndView;
  * @version v1.0.0
  * @since 2016/8/18
  */
-public abstract class SystemViewController<T extends BaseEntity> extends BaseViewController<T> {
+public abstract class SystemViewController<T extends BaseEntity> extends BaseViewController<T> implements InitializingBean {
 
-    /**
-     * 列表页
-     * @return
-     */
-    @RequestMapping("super/index")
-    public ModelAndView superIndex () {
-        return new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/super/" + getModularName() + "/index");
+    private List<ViewController> viewControllerList = new ArrayList<ViewController>();
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        /**
+         * 注册Super View路由解析器
+         *
+         * .../super/index
+         * .../super/form
+         * .../super/form/{id}
+         * .../super/detail/{id}
+         */
+        viewControllerList.add(new ViewController() {
+            @Override
+            public boolean mappingRouter(String[] urls) {
+                return urls.length > 3 && StringUtils.equalsIgnoreCase(urls[3], "super");
+            }
+
+            @Override
+            public String getView() {
+                return "super";
+            }
+
+            @Override
+            protected String getModularName() {
+                return SystemViewController.this.getModularName();
+            }
+
+            @Override
+            public BaseService getService() {
+                return SystemViewController.this.getService();
+            }
+        });
     }
 
     /**
-     * 新增页
-     * @param id
+     * 默认的路由分发器，分发路由到已绑定的viewController，如果未指定处理器则抛出异常
+     *
+     * @param request
      * @return
      * @throws Exception
      */
-    @RequestMapping("super/form")
-    public ModelAndView superForm () throws Exception {
-        return new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/super/"  + getModularName() + "/form");
+    @RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})
+    public ModelAndView dispatcher(HttpServletRequest request) throws Exception {
+        ViewController viewController = getViewController(request.getRequestURI());
+        assert viewController != null;
+        return viewController.dispatcher(request);
     }
 
-    /**
-     * 编辑页
-     * @param id
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping("super/form/{id}")
-    public ModelAndView superForm (@PathVariable("id") Long id) throws Exception {
-        ModelAndView modelAndView = new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/super/"  + getModularName() + "/form");
-        if (id != null && id != 0) {
-            T entity = getService().get(id);
-            modelAndView.getModelMap().put("entity", entity);
+    private ViewController getViewController(String url) throws Exception {
+        Assist.notNull(url, "URL 不能为null");
+        String[] urls = url.split("/");
+        Assist.threw(urls.length < 4, "URL解析错误");
+        for (ViewController viewController : viewControllerList) {
+            if (viewController.mappingRouter(urls)) {
+                return viewController;
+            }
         }
-        modelAndView.getModelMap().put("id", id);
-        return modelAndView;
-    }
-
-    /**
-     * 详情页
-     * @param id
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping("super/detail/{id}")
-    public ModelAndView superDetail (@PathVariable("id") Long id) throws Exception {
-        ModelAndView modelAndView = new ModelAndView(CONSTANT.VIEW_SYSTEM_PATH + "/super/"  + getModularName() + "/detail");
-        if (id != null && id != 0) {
-            T entity = getService().get(id);
-            modelAndView.getModelMap().put("entity", entity);
-        }
-        modelAndView.getModelMap().put("id", id);
-        return modelAndView;
+        Assist.threw("未指定路由解析器\r\nURL:" + url);
+        return null;
     }
 
 }

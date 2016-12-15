@@ -10,6 +10,8 @@
   "tags" : [ {
     "name" : "Demo操作类"
   }, {
+    "name" : "MenuInfo Api"
+  }, {
     "name" : "框架接口"
   } ],
   "schemes" : [ "http" ],
@@ -37,6 +39,50 @@
             "schema" : {
               "type" : "object"
             }
+          }
+        }
+      }
+    },
+    "/api/system/menuInfo/drop" : {
+      "put" : {
+        "tags" : [ "MenuInfo Api" ],
+        "summary" : "zTree拖拽",
+        "description" : "",
+        "operationId" : "drop",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "targetId",
+          "in" : "query",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "moveType",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/api/system/menuInfo/update/dependency" : {
+      "post" : {
+        "tags" : [ "MenuInfo Api" ],
+        "summary" : "更新菜单依赖",
+        "description" : "",
+        "operationId" : "updateDependency",
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
           }
         }
       }

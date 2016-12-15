@@ -2,18 +2,18 @@
 ( function( $, win ){
 /**
  * zTreeProxy - zTree包装对象，基于zTree3.5
- * 
- * 约定了zTree的基本配置项和处理函数 
+ *
+ * 约定了zTree的基本配置项和处理函数
  */
 function zTreeProxy( $obj, setting ){
 	return this.init( $obj, setting );
-}	
+}
 //win.zTreeProxy = zTreeProxy;
 $.extend( true, zTreeProxy, {
 	jsonResult: null,						// JsonResult对象，使用前需要引用jsonResult.js
-	
+
 	treeArray: null,						// 树对象数组，存储所有的树对象
-	
+
 	defaults: {
 		css : {
 			treeContainer: {				// 树菜单容器的样式
@@ -24,7 +24,7 @@ $.extend( true, zTreeProxy, {
 				"min-height": 510,
 				"position"	: "relative"
 			},
-			
+
 			tree: {							// 树菜单样式，通常直接给对象加[tree zTree]样式即可
 				"color"			: "#333",
 				"padding"		: "5px",
@@ -32,13 +32,13 @@ $.extend( true, zTreeProxy, {
 				"font-size"		: "12px",
 				"margin"		: "0px"
 			},
-			
+
 			treeError: {					// 错误提示的样式
 				"color"		: "red",
 				"display"	: "none",
 				"fontSize"	: 12
 			},
-			
+
 			splitCon: {						// 分割线的样式
 				"width"			: 6,
 				"height"		: "100%",
@@ -48,35 +48,34 @@ $.extend( true, zTreeProxy, {
 				"background"	: "RGB(186, 226, 241)",
 				"position"		: "relative"
 			},
-			
+
 			splitImg: {						// 分割线图片的样式
 				"position"	: "relative",
 				"width"		: 6
 			}
-			
+
 		},
-		
+
 		time: {								// 统一的动画时间
 			show			: 300,
 			hide			: 300
 		}
 	},
-	
-	path: {									// 该对象下的所有路径在对象初始化时均会自动补全为绝对路径 
+
+	path: {									// 该对象下的所有路径在对象初始化时均会自动补全为绝对路径
 		fullPath	: "",					// 项目上下文路径，对象初始化时会自动获取id=full_path的文本框的值
 		zTree		: "jquery.ztree-2.6.min.js",	// zTree2.6的js文件路径，已放弃使用
 		btnOpen		: "img/btn_open.gif",			// 分割线的开启状态图片
 		btnClose	: "img/btn_close.gif",			// 分割线的关闭状态图片
-		
-		zTreeStyleHasCheck	: "zTreeStyle/zTreeStyleHasCheck.css",		// zTree3.5对应的外部样式表 
-		zTreeJs35		: ["js3.5/jquery.ztree.core-3.5.min.js",		// zTree3.5的外部js路径
-		         		   "js3.5/jquery.ztree.excheck-3.5.min.js"]	
+
+		zTreeStyleHasCheck	: "zTreeStyle/zTreeStyleHasCheck.css",		// zTree3.5对应的外部样式表
+		zTreeJs35		: ["js3.5/jquery.ztree.all.min.js"]		// zTree3.5的外部js路径
 	},
-	
+
 	index: 0,		// 控制自增的类索引
-	
+
 	hasInit: false,	// 标志当前的类变量是否已经初始化
-	
+
 	specialName: {	// 标志性名称，用于对象存储或者jQuery选择器使用
 		zTreeProxy		: "jQuery_zTreeProxy",
 		zTreeContainer	: "zTreeContainer",
@@ -85,14 +84,14 @@ $.extend( true, zTreeProxy, {
 		splitCon		: "splitCon",
 		splitImg		: "splitImg"
 	},
-	
+
 	util: {
 		/**
 		 * 添加外部js文件，同步等待文件加载完成
 		 * @param url - js文件路径
 		 */
 		addScript: function( url ){
-			$.ajaxSetup( { async: false, cache: false } );
+			$.ajaxSetup( { async: false, cache: false, global: false } );
 			if( $.isArray( url ) ){
 				for( var i = 0, l = url.length; i < l; i++ ){
 					$.getScript( url[i] );
@@ -100,7 +99,7 @@ $.extend( true, zTreeProxy, {
 			} else if( typeof url === "string" ){
 				$.getScript( url );
 			}
-	        $.ajaxSetup( { async: true } );
+	        $.ajaxSetup( { async: true, global: true } );
 		},
 		/**
 		 * 添加外部css文件
@@ -112,7 +111,7 @@ $.extend( true, zTreeProxy, {
 			link.setAttribute( "rel", "stylesheet" );
 		    link.setAttribute( "type", "text/css" );
 		    link.setAttribute( "href", url );
-		
+
 			var heads = doc.getElementsByTagName( "head" );
 			if( heads.length )
 				heads[0].insertBefore( link, heads[0].firstChild );
@@ -152,10 +151,10 @@ $.extend( true, zTreeProxy, {
 				$font			= zTreeProxy.util.dom( "font" 	).css( zTreeProxySetting.css.treeError 		).attr( zTreeProxy.specialName.zTreeProxy, zTreeProxy.specialName.zTreeError 	 ).attr( "id", zTreeProxy.specialName.zTreeError + "_" + index 		),
 				$splitImg		= zTreeProxy.util.dom( "img" 	).css( zTreeProxySetting.css.splitImg 		).attr( zTreeProxy.specialName.zTreeProxy, zTreeProxy.specialName.splitImg 		 ).attr( "id", zTreeProxy.specialName.splitImg + "_" + index 		),
 				$div 			= zTreeProxy.util.dom( "div" 	).css( "position", "relative" );
-			$treeContainer.append( $ul.addClass( "tree" ).addClass( "zTree" ).addClass( "ztree" ) )	
+			$treeContainer.append( $ul.addClass( "tree" ).addClass( "zTree" ).addClass( "ztree" ) )
 			  			  .append( $font.html( "获取数据失败" ) );
 			$splitCon.append( $splitImg.attr( "width", zTreeProxySetting.css.splitImg.width ) ).css( "height", $( win ).height() );
-			return 	zTreeProxySetting.splitPosition === "right" ? 
+			return 	zTreeProxySetting.splitPosition === "right" ?
 					$div.append( $treeContainer ).append( $splitCon ) :
 					$div.append( $splitCon ).append( $treeContainer ) ;
 		},
@@ -173,7 +172,7 @@ $.extend( true, zTreeProxy, {
 	 * @param isDebug - 是否开启debug模式
 	 */
 	initPrev: function( isDebug ){
-		var fullPath = $( "#full_path" ).val() || "",
+		var fullPath = $( "#full_path" ).val() || window['fullPath'] || "",
 			relativePath = "", index, src;
 		if( window.JsonResult ){
 			zTreeProxy.jsonResult = new JsonResult();
@@ -189,37 +188,35 @@ $.extend( true, zTreeProxy, {
 				return false;
 			}
 		} );
-//		if( isDebug ){
-//			if(fullPath === undefined || fullPath === null ){
-//				zTreeProxy.util.debug( '请在页面中加入<input type="text" id="full_path" value="<@full_path path=\'\' />" />' );
-//			} else if( fullPath === "" ){
-//				zTreeProxy.util.debug( "当前上下文路径为空，请确认是否正确" );
-//			}
-//		}
-		
+
 		zTreeProxy.treeArray = new Array();
 		$.extend( true, zTreeProxy.path, {
 			fullPath	: fullPath,
 			zTree		: relativePath + zTreeProxy.path.zTree,
 			btnOpen		: relativePath + zTreeProxy.path.btnOpen,
 			btnClose	: relativePath + zTreeProxy.path.btnClose,
-			
+
 			zTreeStyleHasCheck	: relativePath + zTreeProxy.path.zTreeStyleHasCheck,
-			zTreeJs35	: [relativePath + zTreeProxy.path.zTreeJs35[0],
-			         	   relativePath + zTreeProxy.path.zTreeJs35[1] ]
+			zTreeJs35	: (function () {
+				var ret = [];
+				$.each(zTreeProxy.path.zTreeJs35, function (i, path) {
+					ret.push(relativePath + path);
+				});
+				return ret;
+			}())
 		} );
-		
+
 		zTreeProxy.util.addCssByLink( zTreeProxy.path.zTreeStyleHasCheck );
 		zTreeProxy.util.addScript( zTreeProxy.path.zTreeJs35 );
-		zTreeProxy.hasInit = true; 
+		zTreeProxy.hasInit = true;
 	}
-	
+
 } );
 
 $.extend( true, zTreeProxy.prototype, {
 
 	setting: {
-		zTree: {								// zTree对象初始化的基本配置 
+		zTree: {								// zTree对象初始化的基本配置
 			data : {
 				keep		: {
 					parent	: true,
@@ -269,7 +266,7 @@ $.extend( true, zTreeProxy.prototype, {
 			afterTreeBuild: null
 		}
 	},
-	
+
 	storage : {									// 对象内部存储数据使用
 			$obj: null,							// 需要创建树菜单的jQuery对象
 			tree: null							// zTree对象
@@ -319,8 +316,7 @@ $.extend( true, zTreeProxy.prototype, {
 					self.handleZTreeClick.call( self, event, treeId, treeNode );
 				}
 			};
-//		this.setting = $.extend( true, {}, this.setting, { zTree: { callback: callback } } );
-		this.setting.zTree.callback = callback;
+		this.setting.zTree.callback = $.extend(true, {}, this.setting.zTree.callback, callback);
 		return this;
 	},
 	/**
@@ -340,9 +336,9 @@ $.extend( true, zTreeProxy.prototype, {
 		var $treeContainer 	= this.storage.$obj,
 			$splitCon 		= zTreeProxy.util.get( $treeContainer, zTreeProxy.specialName.splitCon ),
 			$splitImg		= zTreeProxy.util.get( $treeContainer, zTreeProxy.specialName.splitImg );
-		
+
 		this.evt.splitImgEvt( $splitImg );
-		this.evt.splitConEvt( $splitCon, $treeContainer, 
+		this.evt.splitConEvt( $splitCon, $treeContainer,
 							  this.setting.zTreeProxy.splitPosition, $( "#" + this.setting.zTreeProxy.contentId ) );
 		return this;
 	},
@@ -409,7 +405,7 @@ $.extend( true, zTreeProxy.prototype, {
 				}
 			} );
 		}
-		
+
 	},
 	/**
 	 * 执行获取数据，获取成功后会自动执行创建树菜单
@@ -471,7 +467,7 @@ $.extend( true, zTreeProxy.prototype, {
 		var showLevel;
 		return data;
 	},
-	
+
 	handleShowLevelByLevel: function( data, responseLevel ){
 		var resArr = [];
 		for( var i = 0, l = data.length; i < l; i++ ){
@@ -482,20 +478,20 @@ $.extend( true, zTreeProxy.prototype, {
 		delete data;
 		return resArr;
 	},
-	
+
 	handleShowLevelById: function( data ){
 		return this;
 	},
-	
+
 	handleAloneParents: function( data ){
 		return this;
 	},
-	
+
 	handleAloneChildren: function( data ){
 		return this;
 	},
 	// =================== 处理显示层 end ========================
-	
+
 	handleZTreeClick: function( event, treeId, treeNode ){
 		if( $.isFunction( this.setting.reload.handleResponseLevel ) ){
 			this.setting.reload.handleResponseLevel.call( null, event, treeId, treeNode, this.setting.zTreeProxy.responseLevel, this.setting.callback.click );
@@ -504,7 +500,7 @@ $.extend( true, zTreeProxy.prototype, {
 		}
 		return this;
 	},
-	
+
 	handleResponseLevel: function(){
 		return this;
 	},
@@ -529,7 +525,7 @@ $.extend( true, zTreeProxy.prototype, {
 		return this;
 	}
 } );
-	
+
 $.extend( $.fn, {
 	zTreeProxy: function( setting ){
 		var $this;
@@ -597,12 +593,12 @@ $.extend( true, $.fn.zTreeProxy, {
 	}
 } );
 
-	
+
 } )( jQuery, window );
 
 
 ( function( $, win, undefined ){
-	
+
 var orgTreeDefaults = {
 	showLevel : {
 			0: "all",
@@ -668,7 +664,7 @@ var orgTree = {
 					for( var i = 0, l = data.length; i < l; i++ ){
 						code = data[i][orgTreeDefaults.code];
 						if( code === level ){				// 处理显示级别为中国
-							resArr.push( data[i] );			
+							resArr.push( data[i] );
 							break;							// 中国节点只有一个，得到后结束循环
 						} else if( code.length <= level ){	// 处理其他显示级别
 							resArr.push( data[i] );
@@ -733,7 +729,7 @@ function removeAloneParents( data ){
 function removeAloneChildren( data ){
 	return data;
 }
-	
+
 $.fn.orgTree = function( setting ){
 	setting = $.extend( true, {}, orgTree.setting, setting );
 	return $( this ).zTreeProxy( setting );
@@ -742,7 +738,7 @@ $.fn.orgTree = function( setting ){
 
 } )( jQuery, window );
 ( function( $, win, undefined ){
-	
+
 	var menuTree = {
 			setting: {
 				expand: "$.fn.menuTree",
@@ -821,7 +817,7 @@ $.fn.orgTree = function( setting ){
 	function removeAloneChildren( data ){
 		return data;
 	}
-		
+
 	$.fn.menuTree = function( setting ){
 		setting = $.extend( true, {}, menuTree.setting, setting );
 		return $( this ).zTreeProxy( setting );

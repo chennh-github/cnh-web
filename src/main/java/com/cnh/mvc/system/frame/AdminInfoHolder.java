@@ -20,7 +20,7 @@ public class AdminInfoHolder {
 
     private final static Map<String, AdminInfo> adminInfoMap = new HashMap<String, AdminInfo>();
 
-    public final static String KEY = "__KEY_SYSTEM__";
+    public final static String KEY = "__KEY__SYSTEM__";
 
     public static void add(final AdminInfo adminInfo) {
         String key = KEY + UUID.randomUUID().toString();

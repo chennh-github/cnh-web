@@ -16,6 +16,7 @@ public class CollectionWrap {
 
     /**
      * 集合JOIN
+     *
      * @param list
      * @return
      */
@@ -25,6 +26,7 @@ public class CollectionWrap {
 
     /**
      * 集合JOIN
+     *
      * @param list
      * @param split
      * @return
@@ -40,6 +42,7 @@ public class CollectionWrap {
 
     /**
      * 集合JOIN
+     *
      * @param list
      * @param split
      * @param joinProcessor
@@ -54,10 +57,8 @@ public class CollectionWrap {
     }
 
 
-    public interface JoinProcessor<E> {
-
-        public String process(E value, int index, int size);
-
+    public interface JoinProcessor<T> {
+        public String process(T value, int index, int size);
     }
 
 

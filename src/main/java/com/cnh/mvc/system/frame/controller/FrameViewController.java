@@ -24,7 +24,7 @@ public class FrameViewController {
 
 
     @RequestMapping(value = "login")
-    public ModelAndView login () throws Exception {
+    public ModelAndView login() throws Exception {
         RSAWrap.RSA rsa = RSAHolder.general();
         ModelAndView view = new ModelAndView("system/login/login");
 
@@ -38,6 +38,12 @@ public class FrameViewController {
         modelMap.put("exponent", rsa.getRsaPublicKey().getPublicExponent().toString(16));
         modelMap.put("modulus", rsa.getRsaPublicKey().getModulus().toString(16));
         return view;
+    }
+
+
+    @RequestMapping(value = "main")
+    public ModelAndView main() {
+        return new ModelAndView("system/frame/main-fixed");
     }
 
 }

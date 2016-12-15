@@ -1,6 +1,7 @@
-;(function ($, viewModel) {
+;
+(function ($, viewModel) {
 
-    "use strict";
+    'use strict';
 
     $.extend(true, viewModel, {
 
@@ -15,6 +16,42 @@
             checkedArray: [],       // 列表选中记录
             hasInited: false
         },
+        messages: {
+            'update': {
+                success: '更新成功'
+            },
+            'delete': {
+                success: '删除成功',
+                batch: {
+                    title: '确定删除选中的记录？',
+                    content: '该操作不可恢复，点击确定继续',
+                    noData: '请选择要删除的记录'
+                },
+                item: {
+                    title: '确定删除该记录？',
+                    content: '该操作不可恢复，点击确定继续'
+                }
+            },
+            'export': {
+                success: '导出成功'
+            },
+            'moveUp': {
+                success: '上移成功'
+            },
+            'moveDown': {
+                success: '下移成功'
+            },
+            'zTop': {
+                success: '置顶成功'
+            },
+            'list': {
+                loadPrevPage: '当前页没有数据，自动加载上一页数据',
+                noData: '暂无数据'
+            },
+            'form': {
+                success: '操作成功'
+            }
+        },
 
         /**
          * 初始化viewModel
@@ -24,7 +61,7 @@
             this.initReady();
             this.initValidator();
             this.search();
-            ko.applyBindings(this, $("#bootstrap")[0]);
+            ko.applyBindings(this, $('#bootstrap')[0]);
 
             this.model.hasInited(true);
         },
@@ -41,13 +78,97 @@
          */
         afterList: $.noop,
         /**
+         * 更新数据成功后的回调函数
+         */
+        afterUpdateData: function () {
+            master.sweet.success(this.messages.update.success);
+            this.list();
+        },
+        /**
+         * 设置导入时需要上传的数据
+         * @param data
+         * @returns {{}}
+         */
+        setImportData: function (data) {
+            return {};
+        },
+        /**
+         * 删除单个记录后回调函数
+         */
+        afterDeleteItem: function () {
+            master.toast.success(this.messages.delete.success);
+            this.list();
+        },
+        /**
+         * 批量删除回调函数
+         */
+        afterDeleteBatch: function () {
+            master.sweet.success(this.messages.delete.success);
+            this.list();
+        },
+        /**
+         * 导入Excel成功后回调函数
+         * @param result
+         * @param data
+         * @param fileInput
+         */
+        afterImportXls: function (result, data, fileInput) {
+            if (result) {
+                $('#importDialog').fadeOut(300);
+                this.list();
+                location.href = data;
+            }
+        },
+        /**
+         * 导出Excel成功后回调函数
+         * @param xlsDownloadUrl
+         */
+        afterExportXls: function (xlsDownloadUrl) {
+            master.sweet.success(this.messages.export.success);
+            if (xlsDownloadUrl) {
+                location.href = xlsDownloadUrl;
+            }
+        },
+        /**
+         * 设置弹窗form的传递参数
+         * @returns {{}}
+         */
+        setFormDialogData: function (id, url) {
+            return {};
+        },
+        /**
+         * 上移成功后回调函数
+         */
+        afterMoveUp: function () {
+            master.sweet.success(this.messages.moveUp.success);
+            this.list();
+        },
+        /**
+         * 下移成功后回调函数
+         */
+        afterMoveDown: function () {
+            master.sweet.success(this.messages.moveDown.success);
+            this.list();
+        },
+        /**
+         * 置顶成功后回调函数
+         */
+        afterZTop: function () {
+            master.sweet.success(this.messages.zTop.success);
+            this.list();
+        },
+        /**
          * 设置分页
          * @param pageNo
          * @param pageSize
          */
         setPage: function (pageNo, pageSize) {
-            if (pageNo) { this.model.search.pageNo(pageNo); }
-            if (pageSize) { this.model.search.pageSize(pageSize); }
+            if (pageNo) {
+                this.model.search.pageNo(pageNo);
+            }
+            if (pageSize) {
+                this.model.search.pageSize(pageSize);
+            }
         },
         list: function (pageNo, pageSize) {
             var that = this,
@@ -64,12 +185,12 @@
                     // 删除等操作导致的最后一页唯一一条记录被删除后要跳转到前一页
                     if (data.pageNo > 1) {
                         that.list(data.pageNo - 1);
-                        master.toast.info("当前页没有数据，自动加载上一页数据");
+                        master.toast.info(that.messages.list.loadPrevPage);
                     } else {
-                        master.toast.info("暂无数据");
+                        master.toast.info(that.messages.list.noData);
                     }
                 }
-                that.page($("#pagination"), page);
+                that.page($('#pagination'), page);
             });
         },
         /**
@@ -80,7 +201,7 @@
             var checkedArray = this.model.checkedArray.peek();
             if (checkedArray.length) {
                 $.each(data, function (i, v) {
-                    var index = master.fmt.index(v, checkedArray, "id");
+                    var index = master.fmt.index(v, checkedArray, 'id');
                     if (index > -1) {
                         data[i] = checkedArray[index];
                     }
@@ -130,12 +251,6 @@
             this.setPage(page.pageNo, page.pageSize);
             // 此处调用分页插件
             $pagination.page(page);
-            // 如果只有一页或没有直接隐藏分页
-            //if (page.pageCount <= 1) {
-            //    $pagination.hide();
-            //} else {
-            //    $pagination.show();
-            //}
         },
         /**
          * 当前页全选/全不选
@@ -144,7 +259,7 @@
          * @returns {boolean}
          */
         checkAll: function (data, e) {
-            var isChecked = $(e.target).is(":checked"),
+            var isChecked = $(e.target).is(':checked'),
                 checkedArray = this.model.checkedArray;
 
             $.each(this.model.dataList.peek(), function (i, v) {
@@ -164,7 +279,7 @@
          * @returns {boolean}
          */
         checkOne: function (item, e) {
-            var isChecked = $(e.target).is(":checked");
+            var isChecked = $(e.target).is(':checked');
             if (isChecked) {
                 this.model.checkedArray.push(item);
             } else {
@@ -176,9 +291,9 @@
          * 获取多选框选中的ID数组
          * @returns {Array}
          */
-        getCheckedArrayIds:  function () {
+        getCheckedArrayIds: function () {
             var ids = [];
-            $.each(this.model.checkedArray.peek(), function (index, item){
+            $.each(this.model.checkedArray.peek(), function (index, item) {
                 ids.push(item.id);
             });
             return ids;
@@ -191,10 +306,10 @@
         updateData: function (data, label) {
             var that = this;
             if (data == null || data.id == null) {
-                return master.sweet.warning("id或data不能为空!");
+                return master.sweet.warning('id或data不能为空!');
             }
-            service.update(data).then(function (){
-                master.sweet.success("更新成功");
+            service.update(data).then(function () {
+                that.afterUpdateData();
             });
         },
         /**
@@ -203,21 +318,21 @@
          */
         deleteItem: function (id, isSilent) {
             var that = this;
-            if (typeof isSilent !== "boolean") {
+            if (typeof isSilent !== 'boolean') {
                 isSilent = false;
             }
             function doDelete() {
                 service.del(id).then(function () {
-                    master.toast.success("删除成功");
-                    that.list();
+                    that.afterDeleteItem();
                 });
             }
+
             if (isSilent) {
                 doDelete();
             } else {
                 $.confirm({
-                    title: "确定删除该记录？",
-                    content: "该操作不可恢复，点击确定继续",
+                    title: this.messages.delete.item.title,
+                    content: this.messages.delete.item.content,
                     confirm: function () {
                         doDelete();
                     }
@@ -231,24 +346,16 @@
             var ids = this.getCheckedArrayIds(),
                 that = this;
             if (!ids.length) {
-                return master.sweet.warning("请选择要删除的记录");
+                return master.sweet.warning(this.messages.delete.batch.noData);
             }
             master.sweet.confirm({
-                title: "确定删除选中的记录？"
+                title: this.messages.delete.batch.title,
+                content: this.messages.delete.batch.content
             }, function () {
-                service.del(ids.join(",")).then(function () {
-                    master.sweet.success("删除成功");
-                    that.list();
+                service.del(ids.join(',')).then(function () {
+                    that.afterDeleteBatch();
                 });
             });
-        },
-        /**
-         * 设置导入时需要上传的数据
-         * @param moduleName
-         * @returns {{}}
-         */
-        setImportData: function (moduleName) {
-            return {};
         },
         /**
          * 导入Excel
@@ -258,28 +365,10 @@
          */
         importXls: function (fileInput, data) {
             var that = this;
-            if (!master.isExcel(fileInput) || !master.isFileSizeValid(fileInput, 2*1024*1024)) {
-                return master.toast.warning("请选择.xls后缀名的Excel文件");
-            }
-            $("body").cover();
-            $.ajaxFileUpload({
-                url : fullPath + "system/xls/importXls",
-                type: "POST",
-                secureuri:false,
-                fileElementId : fileInput.id,
-                dataType : 'json',
-                data: $.extend(true, data, this.setImportData(window["modularName"])),
-                success: function (xlsDownloadUrl, status){
-                    master.sweet.success("导入成功", "请从下载的Excel中查证记录是否导入");
-                    if (xlsDownloadUrl) {
-                        location.href = xlsDownloadUrl;
-                    }
-                    that.list();
-                    $("body").uncover();
-                },
-                error: function (data, status, e){
-                    master.toast.error("导入失败");
-                    $("body").uncover();
+            master.work.uploadXls(fileInput, {
+                data: $.extend(true, {}, data, this.setImportData(data)),
+                afterUpload: function (result, data, fileInput) {
+                    that.afterImportXls(result, data, fileInput);
                 }
             });
         },
@@ -289,7 +378,8 @@
          * @param size
          */
         exportXls: function (xlsName, size) {
-            var data = ko.mapping.toJS(this.model.search);
+            var data = ko.mapping.toJS(this.model.search),
+                that = this;
             if (!size) {
                 data.pageNo = 1;
                 data.pageSize = Number.MAX_VALUE;
@@ -298,19 +388,16 @@
             }
             data.xlsName = xlsName;
             service.exportXls(data).then(function (xlsDownloadUrl) {
-                master.sweet.success("导出成功");
-                if (xlsDownloadUrl) {
-                    location.href = xlsDownloadUrl;
-                }
+                that.afterExportXls(xlsDownloadUrl);
             });
         },
         /**
          * 显示form弹出框
          * @param id
          */
-        showFormDialog: function (id) {
-            var url = 'form2' + (id ? '/' + id : '');
-            $('#formIframe').attr('src', url);
+        showFormDialog: function (id, url) {
+            url = (typeof url === 'string' ? url : 'form') + (id ? '/' + id : '');
+            $('#formIframe').attr('src', master.utils.compatUrl(url, this.setFormDialogData(id, url)));
             master.utils.showDialog($('#formDialog'));
         },
         /**
@@ -330,6 +417,7 @@
             formIframe.contentWindow.submitForm().then(function () {
                 that.list();
                 that.hideFormDialog();
+                master.sweet.success(this.messages.form.success);
             });
         },
         /**
@@ -339,12 +427,41 @@
         showDetailDialog: function (id) {
             $('#detailIframe').removeAttr('src').attr('src', 'detail/' + id);
             master.utils.showDialog($('#detailDialog'));
+        },
+        /**
+         * 上移
+         * @param data
+         */
+        moveUp: function (data) {
+            var that = this;
+            service.moveUp(data).then(function () {
+               that.afterMoveUp();
+            });
+        },
+        /**
+         * 下移
+         * @param data
+         */
+        moveDown: function (data) {
+            var that = this;
+            service.moveDown(data).then(function () {
+                that.afterMoveDown();
+            });
+        },
+        /**
+         * 置顶
+         * @param data
+         */
+        zTop: function (data) {
+            var that = this;
+            service.zTop(data).then(function () {
+               that.afterZTop();
+            });
         }
     });
 
     $(function () {
         ready.init(['selectPicker', 'select2Picker', 'datetimePicker', 'validatePicker']);
-        viewModel.initViewModel();
     });
 
     // 开启ko延迟更新
