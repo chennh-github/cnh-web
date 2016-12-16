@@ -10,7 +10,6 @@ function zTreeProxy( $obj, setting ){
 }
 //win.zTreeProxy = zTreeProxy;
 $.extend( true, zTreeProxy, {
-	jsonResult: null,						// JsonResult对象，使用前需要引用jsonResult.js
 
 	treeArray: null,						// 树对象数组，存储所有的树对象
 
@@ -173,23 +172,15 @@ $.extend( true, zTreeProxy, {
 	 */
 	initPrev: function( isDebug ){
 		var fullPath = $( "#full_path" ).val() || window['fullPath'] || "",
-			relativePath = "", index, src;
-		if( window.JsonResult ){
-			zTreeProxy.jsonResult = new JsonResult();
-		} else {
-			if( isDebug === true ){
-				zTreeProxy.util.debug( "缺少对象JsonResult，请确认是否导入了jsonResult.js" )
-			}
-		}
-		$("script").each( function(){
-			src = this.src;
-			if ( ( index = src.indexOf( "jquery.zTreeProxy" ) ) > -1 ) {
-				relativePath = this.src.substring( 0, index );
-				return false;
-			}
-		} );
+			relativePath = (function () {
+				var scripts = document.scripts;
+				var src = scripts[scripts.length - 1].src;
+				var minifyIndex = src.indexOf("/minify/");
+				return minifyIndex > -1 && window.fullPath ? window.fullPath + "static/js/asserts/jquery-zTree/v3.5/js/" :
+					src.substring( 0, scripts[scripts.length - 1].src.lastIndexOf( "/" ) + 1 );
+			}());
 
-		zTreeProxy.treeArray = new Array();
+		zTreeProxy.treeArray = [];
 		$.extend( true, zTreeProxy.path, {
 			fullPath	: fullPath,
 			zTree		: relativePath + zTreeProxy.path.zTree,
@@ -206,8 +197,11 @@ $.extend( true, zTreeProxy, {
 			}())
 		} );
 
-		zTreeProxy.util.addCssByLink( zTreeProxy.path.zTreeStyleHasCheck );
-		zTreeProxy.util.addScript( zTreeProxy.path.zTreeJs35 );
+		if (!$.fn.zTree) {
+			zTreeProxy.util.addCssByLink( zTreeProxy.path.zTreeStyleHasCheck );
+			zTreeProxy.util.addScript( zTreeProxy.path.zTreeJs35 );
+		}
+
 		zTreeProxy.hasInit = true;
 	}
 

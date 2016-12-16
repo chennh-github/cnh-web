@@ -66,7 +66,7 @@ public abstract class SystemViewController<T extends BaseEntity> extends BaseVie
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "**", method = {RequestMethod.GET, RequestMethod.POST})
     public ModelAndView dispatcher(HttpServletRequest request) throws Exception {
         ViewController viewController = getViewController(request.getRequestURI());
         assert viewController != null;

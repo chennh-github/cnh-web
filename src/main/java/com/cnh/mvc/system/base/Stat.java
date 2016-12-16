@@ -1,8 +1,6 @@
 package com.cnh.mvc.system.base;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import com.cnh.frame.crud.base.constant.StatMap;
 
 /**
  * ${Description}
@@ -11,12 +9,11 @@ import org.springframework.context.ApplicationContextAware;
  * @version v1.0.0
  * @since 2016/12/9
  */
-public class Stat implements ApplicationContextAware {
+public class Stat {
 
+    public static final StatMap<Integer, String> SEX = new StatMap<Integer, String>(
+            new StatMap.Entry<Integer, String>(1, "男"),
+            new StatMap.Entry<Integer, String>(2, "女")
+    );
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-
-
-    }
 }

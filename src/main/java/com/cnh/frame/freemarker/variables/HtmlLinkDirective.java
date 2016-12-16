@@ -69,7 +69,12 @@ public class HtmlLinkDirective implements TemplateDirectiveModel {
 
 
     private String generalLink(String href) {
-        return "<link type='text/css' rel='stylesheet' href='" + href + "?v=" + EnvironmentContext.VERSION + "' />\n";
+        if (href.contains("?")) {
+            href += "&v=" + EnvironmentContext.VERSION;
+        } else {
+            href += "?v=" + EnvironmentContext.VERSION;
+        }
+        return "<link type='text/css' rel='stylesheet' href='" + href + "' />\n";
     }
 
 }

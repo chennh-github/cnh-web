@@ -4,6 +4,7 @@
 
 <@layout.header>
 	<@index.css />
+    <@link href="static/js/asserts/jquery-zTree/v3.5/js/zTreeStyle/zTreeStyleHasCheck.css" />
     <style>
         #tree {
             float: left;
@@ -165,7 +166,8 @@
 </@layout.page>
 <@layout.footer>
 	<@index.js />
-	<@script src="static/js/asserts/jquery-zTree/v3.5/js/jquery.zTreeProxy.js,
+	<@script src="static/js/asserts/jquery-zTree/v3.5/js/js3.5/jquery.ztree.all.min.js,
+	              static/js/asserts/jquery-zTree/v3.5/js/jquery.zTreeProxy.js,
 	              static/js/system/super/menuInfo/tree.js,
 	              static/js/system/super/menuInfo/service.js,
 				  static/js/system/super/menuInfo/index.js" />

@@ -69,7 +69,12 @@ public class HtmlScriptDirective implements TemplateDirectiveModel {
 
 
     private String generalScript(String src) {
-        return "<script type='text/javascript' src='" + src + "?v=" + EnvironmentContext.VERSION + "' ></script>\n";
+        if (src.contains("?")) {
+            src += "&v=" + EnvironmentContext.VERSION;
+        } else {
+            src += "?v=" + EnvironmentContext.VERSION;
+        }
+        return "<script type='text/javascript' src='" + src + "' ></script>\n";
     }
 
 }

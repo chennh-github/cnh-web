@@ -4,6 +4,7 @@ import com.cnh.frame.crud.base.constant.CONSTANT;
 import com.cnh.frame.wraps.CollectionWrap;
 import com.cnh.frame.wraps.FileWrap;
 import com.cnh.frame.wraps.RequestWrap;
+import com.cnh.frame.wraps.StringWrap;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class Minify {
     /**
      * 合并后文件存储目录
      */
-    private static final String MINIFY_PATH = "/minify/";
+    private static final String MINIFY_PATH = "/minify";
 
 
     /**
@@ -60,19 +61,7 @@ public class Minify {
         return minify(srcValue, hrefs, "css", new Handle() {
             @Override
             public String handle(String source, String content) {
-                String result = content;
-                if (StringUtils.isNotBlank(content)) {
-                    Pattern p = Pattern.compile("url\\s*\\(\\s*(['|\"]?(.+?)['|\"]?)\\s*\\)", Pattern.CASE_INSENSITIVE);
-                    Matcher m;
-                    while ((m = p.matcher(content)).find()) {
-                        String wrappedUrl = m.group(0);
-                        String url = m.group(2);
-                        if (StringUtils.isNotBlank(url)) {
-                            content = content.replace(wrappedUrl, "");
-                            result = result.replace(wrappedUrl, "'" + parseUrlToAbsolute("/" + source, url) + "'");
-                        }
-                    }
-                }
+                String result = replaceCssUrl(source, content);
                 return result + "\n\n";
             }
         });
@@ -120,7 +109,7 @@ public class Minify {
         if (StringUtils.isBlank(srcValue)) {
             srcValue = MINIFY_PATH + RequestWrap.getRequest().getRequestURI() + "/" + System.currentTimeMillis() + "." + ext;
         } else {
-            srcValue = MINIFY_PATH + srcValue + "/" + System.currentTimeMillis() + "." + ext;
+            srcValue = MINIFY_PATH + StringWrap.endBy(srcValue, "/") + System.currentTimeMillis() + "." + ext;
         }
         for (String src : srcs) {
             src = StringUtils.trim(src);
@@ -128,7 +117,7 @@ public class Minify {
         }
         FileWrap.writeToFile(RequestWrap.getRealPath(CONSTANT.WEBAPP + srcValue), srcSource.toString());
         mappedSource.put(srcKey, srcValue);
-        return srcValue;
+        return srcValue + "?f=" + CollectionWrap.join(srcs, ",").replaceAll("[\\s\\r\\n]", "");
     }
 
     /**
@@ -173,6 +162,30 @@ public class Minify {
         return StringUtils.startsWithAny(url, "http", "https", "/");
     }
 
+
+    /**
+     * 替换CSS中的URL地址
+     *
+     * @param source
+     * @param content
+     * @return
+     */
+    private static String replaceCssUrl(String source, String content) {
+        String result = content;
+        if (StringUtils.isNotBlank(content)) {
+            Pattern p = Pattern.compile("url\\s*\\(\\s*(['|\"]?(.+?)['|\"]?)\\s*\\)", Pattern.CASE_INSENSITIVE);
+            Matcher m;
+            while ((m = p.matcher(content)).find()) {
+                String wrappedUrl = m.group(0);
+                String url = m.group(2);
+                if (StringUtils.isNotBlank(url)) {
+                    content = content.replace(wrappedUrl, "");
+                    result = result.replace(wrappedUrl, "url('" + parseUrlToAbsolute("/" + source, url) + "')");
+                }
+            }
+        }
+        return result;
+    }
 
     public interface Handle {
         public String handle(String source, String content);

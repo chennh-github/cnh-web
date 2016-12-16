@@ -8,9 +8,13 @@
   "host" : "127.0.0.1:8080",
   "basePath" : "/api",
   "tags" : [ {
+    "name" : "AdminInfo Api"
+  }, {
     "name" : "Demo操作类"
   }, {
     "name" : "MenuInfo Api"
+  }, {
+    "name" : "MenuRelate Api"
   }, {
     "name" : "框架接口"
   } ],
